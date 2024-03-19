@@ -15,4 +15,4 @@ router.route("/:id").patch(updateARoom).get(getARoom).delete(deleteARoom);
 //     res.status(200).json({msg:`get room ${req.params.id}`});
 // })
 
-module.exports = router;
+module.exports = router;       

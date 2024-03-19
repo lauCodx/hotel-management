@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const uuid  = require('uuid');
 
 const hotelSchema = new mongoose.Schema({
     name:{
@@ -7,8 +8,10 @@ const hotelSchema = new mongoose.Schema({
     },
 
     roomType: {
-        type : mongoose.Schema.Types.ObjectId,
-        ref : 'Room'
+        type : String,
+        default : uuid.v4(),
+        require : true
+
     },
 
     price: {
