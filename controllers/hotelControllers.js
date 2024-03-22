@@ -38,11 +38,11 @@ const getARoom = asyncHandler(async (req, res) => {
     };
   
     if (minPrice) {
-          filter.price.$gte = minPrice; // greater than or equal to minPrice
+        filter.price.$gte = minPrice; // greater than or equal to minPrice
     };
   
     if (maxPrice) {
-          filter.price.$lte = maxPrice; // less than or equal to maxPrice
+        filter.price.$lte = maxPrice; // less than or equal to maxPrice
     };
 
     const hotel = await Hotel.find(filter);
