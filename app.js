@@ -1,7 +1,7 @@
 const express = require("express");
 const connectdb = require("./config/dbconnection");
-const dotenv = require("dotenv").config();
-const cors = require ('cors');
+ require("dotenv").config();
+ require ('cors');
 const errorHandler = require("./middleware/errorHandler");
 
 
@@ -11,8 +11,9 @@ const app = express();
 
 connectdb();
 app.use(express.json());
+app.use("/api/users", require("./routes/user.route"));
 app.use("/api/v1/rooms", require("./routes/hotelRoutes"));
-app.use(errorHandler)
+app.use(errorHandler);
 
 app.listen(port, () =>{
     console.log(`Server runing on port ${port}`)
