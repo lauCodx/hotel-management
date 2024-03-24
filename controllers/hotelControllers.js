@@ -15,6 +15,11 @@ const getAllRooms = asyncHandler(async (req, res) => {
 // @ access public
 
 const getARoom = asyncHandler(async (req, res) => {
+    const hotel = await Hotel.findById(req.params.id);
+    if( !hotel){
+        res.status(404);
+        throw new Error('Room not found')
+    };
 
     const { search, roomType, minPrice, maxPrice} = req.query;
     // when maxPrice is passed and minPrice = 0
@@ -45,10 +50,10 @@ const getARoom = asyncHandler(async (req, res) => {
         filter.price.$lte = maxPrice; // less than or equal to maxPrice
     };
 
-    const hotel = await Hotel.find(filter);
+    const hotelFilter = await Hotel.find(filter);
   
     
-    res.status(200).json(hotel);
+    res.status(200).json(hotelFilter);
 })
 
 // @ desc Insert a rooms
