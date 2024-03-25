@@ -6,7 +6,33 @@ const User = require("../models/user.model")
 // @ access public
 
 const registerUser = asyncHandler(async (req, res) => {
-    res.status(200).json({msg:"Register a user"});
+    console.log(req.body);
+    
+    const { username, email, password} = req.body;
+    if (!username || !email || !password){
+        res.status(400);
+        throw new Error('All fields are mandatory')
+    }
+
+    const checkUser = await User.findOne ({ email });
+    if (checkUser){
+        res.status(400);
+        throw new Error ("User already exist");
+    };
+
+    const user = await User.create(
+        {
+            username,
+            email,
+            password
+        }
+    )
+
+    res.status(200).json({
+        success:true,
+        message: 'User created Succesfully',
+        data : user
+    });
 })
 
 // @ desc login user 
@@ -26,4 +52,4 @@ const currentUser = asyncHandler(async (req, res) => {
 })
 
 
-module.exports = { registerUser, loginUser, currentUser }
+module.exports = { registerUser, loginUser, currentUser };

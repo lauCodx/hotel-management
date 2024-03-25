@@ -68,7 +68,8 @@ const RegARoom = asyncHandler(async (req, res) => {
     if (!name || !price){
         res.status(400);
         throw new Error("All field are mandatory!")
-    }
+    };
+    
     const checkHotel = await Hotel.findOne({ name });
     if( checkHotel ){
         res.status(400);
