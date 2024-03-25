@@ -61,17 +61,31 @@ const getARoom = asyncHandler(async (req, res) => {
 // @ access public
 
 const RegARoom = asyncHandler(async (req, res) => {
-    console.log('Created', req.body);
-    const {name, price} = req.body;
+   
+    console.log ('Created', req.body);
+    const { name, price } = req.body;
+
     if (!name || !price){
         res.status(400);
         throw new Error("All field are mandatory!")
     }
+    const checkHotel = await Hotel.findOne({ name });
+    if( checkHotel ){
+        res.status(400);
+        throw new Error('Room already exist')
+    };
+   
     const hotel = await Hotel.create({
         name,
         price
     })
-    res.status(201).json(hotel);
+    res.status(201).json(
+        {
+            success: true,
+            message: "Created successfully",
+            data: hotel
+        }
+    );
 })
 
 // @ desc Update a rooms
@@ -89,7 +103,13 @@ const updateARoom = asyncHandler(async (req, res) => {
         req.body,
         {new:true}
         );
-    res.status(200).json(updateRoom);
+    res.status(200).json(
+        {
+            success: true,
+            message: "Updated successfully",
+            data: updateARoom
+        }
+    );
 })
 
 // @ desc Delete all rooms
