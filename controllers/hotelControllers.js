@@ -3,16 +3,16 @@ const Hotel = require("../models/hotelModel")
 
 // @ desc Get all rooms
 // @ route GET /api/v1/rooms 
-// @ access public
+// @ access private
 
 const getAllRooms = asyncHandler(async (req, res) => {
-    const hotel = await Hotel.find()
+    const hotel = await Hotel.find({user_id: req.user.id})
     res.status(200).json(hotel);
 })
 
 // @ desc Get a rooms
 // @ route GET /api/v1/rooms/id
-// @ access public
+// @ access private
 
 const getARoom = asyncHandler(async (req, res) => {
     const hotel = await Hotel.findById(req.params.id);
@@ -78,7 +78,8 @@ const RegARoom = asyncHandler(async (req, res) => {
    
     const hotel = await Hotel.create({
         name,
-        price
+        price,
+        user_id: req.user.id
     })
     res.status(201).json(
         {

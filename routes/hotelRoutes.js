@@ -6,7 +6,11 @@ const {
     RegARoom,
     updateARoom,
     deleteARoom 
-} = require("../controllers/hotelControllers")
+} = require("../controllers/hotelControllers");
+
+const validateToken = require("../middleware/validation.token");
+
+router.use(validateToken)
 
 router.route("/").get(getAllRooms).post(RegARoom);
 router.route("/:id").patch(updateARoom).get(getARoom).delete(deleteARoom);
