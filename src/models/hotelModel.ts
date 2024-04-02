@@ -1,5 +1,5 @@
-const mongoose = require("mongoose");
-const uuid  = require('uuid');
+import mongoose from "mongoose";
+import { v4 as uuid } from 'uuid';
 
 const hotelSchema = new mongoose.Schema({
     user_id:{
@@ -15,7 +15,7 @@ const hotelSchema = new mongoose.Schema({
 
     roomType: {
         type : String,
-        default : uuid.v4(),
+        default : uuid(),
         require : true
 
     },
@@ -30,4 +30,6 @@ const hotelSchema = new mongoose.Schema({
 }
 );
 
-module.exports = mongoose.model('hotel', hotelSchema);
+const Hotel = mongoose.model('hotel', hotelSchema);
+
+export default Hotel;

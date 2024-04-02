@@ -1,19 +1,23 @@
-const express = require("express");
-const router = express.Router();
-const { 
+import express from "express"
+const router = express.Router()
+
+
+import { 
     getAllRooms,
-    getARoom,
+    // getARoom,
     RegARoom,
     updateARoom,
     deleteARoom 
-} = require("../controllers/hotelControllers");
+} from "../controllers/hotelControllers";
 
-const validateToken = require("../middleware/validation.token");
+import validateToken from "../middleware/validation.token";
 
 router.use(validateToken)
 
+
+
 router.route("/").get(getAllRooms).post(RegARoom);
-router.route("/:id").patch(updateARoom).get(getARoom).delete(deleteARoom);
+router.route("/:id").patch(updateARoom).delete(deleteARoom);
 
 // router.route("/:id").get((req, res) => {
 //     res.status(200).json({msg:`get room ${req.params.id}`});

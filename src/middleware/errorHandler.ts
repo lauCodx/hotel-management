@@ -1,6 +1,7 @@
-const { constants } = require("../constants")
+import { NextFunction, Request, Response } from "express";
+import { constants } from "../constants"
 
-const errorHandler = (err, req, res, next) => {
+const errorHandler = (err: Error, req:Request, res: Response, next: NextFunction) => {
     const statusCode = res.statusCode ? res.statusCode:500;
 
     
@@ -33,4 +34,4 @@ const errorHandler = (err, req, res, next) => {
 };
 
 
-module.exports = errorHandler;
+export default errorHandler;

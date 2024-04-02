@@ -1,15 +1,16 @@
-const express = require("express");
-const connectdb = require("../src/config/dbconnection");
+import express from "express";
+import {connectDb} from "../src/config/dbconnection";
  require("dotenv").config();
  require ('cors');
-const errorHandler = require("../src/middleware/errorHandler");
+import errorHandler from "../src/middleware/errorHandler";
 
+ connectDb();
 
 
 const port = process.env.PORT || 5001;
 const app = express();
 
-connectdb();
+
 app.use(express.json());
 app.use("/api/users", require("../src/routes/user.route"));
 app.use("/api/v1/rooms", require("../src/routes/hotelRoutes"));

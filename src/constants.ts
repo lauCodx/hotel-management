@@ -1,4 +1,4 @@
-exports.constants = {
+const constants : any  = {
     VALIDATION_ERROR : 400,
     UNAUTHORIZE: 401,
     FORBIDDEN: 403,
@@ -7,3 +7,6 @@ exports.constants = {
 
 }
 
+export {
+    constants
+}

@@ -1,14 +1,17 @@
-const asyncHandler = require('express-async-handler');
-const User = require("../models/user.model");
-const bcrypt = require("bcryptjs")
-const jwt = require("jsonwebtoken")
+import asyncHandler from 'express-async-handler';
+import User from "../models/user.model";
+import bcrypt from "bcryptjs"
+import jwt from "jsonwebtoken"
+import { Request, Response } from 'express';
+import { userInter } from '../interface/user.interface';
+
 
 
 // @ desc Register user 
 // @ route POST /api/user/register
 // @ access public
 
-const registerUser = asyncHandler(async (req, res) => {
+const registerUser = asyncHandler(async (req: Request, res: Response ) => {
     console.log(req.body);
 
     const { username, email, password} = req.body;
@@ -61,14 +64,14 @@ const registerUser = asyncHandler(async (req, res) => {
 // @ route POST /api/user/login
 // @ access public
 
-const loginUser = asyncHandler(async (req, res) => {
+const loginUser = asyncHandler(async (req : Request, res: Response ) => {
     const { email, password} = req.body;
     if ( !email || !password){
         res.status(400);
         throw new Error ("All fields are mandatory");
     }
 
-    const user = await User.findOne({ email });
+    const user: userInter | any = await User.findOne({ email });
     // comparing password with hashpassword
     if ( user && (await bcrypt.compare(password, user.password))){
         const accessToken = jwt.sign({
@@ -77,13 +80,14 @@ const loginUser = asyncHandler(async (req, res) => {
             email: user.email,
             id: user.id
            }
-        }, process.env.ACCESS_TOKEN,
+        }, process.env.ACCESS_TOKEN!,
         {expiresIn:'15m'}
         );
         res.status(200).json({accessToken})
+
     }else{
         res.status(400);
-        throw new Error('User not valid')
+        throw new Error('Incorrect email or password!')
     }
 
 })
@@ -92,9 +96,10 @@ const loginUser = asyncHandler(async (req, res) => {
 // @ route POST /api/user/current
 // @ access private
 
-const currentUser = asyncHandler(async (req, res) => {
-    res.status(200).json(req.user);
+const currentUser = asyncHandler(async (req : Request, res: Response ) => {
+    console.log("getting user")
+    res.status(200).json(res.locals.user);
 })
 
 
-module.exports = { registerUser, loginUser, currentUser };
+export { registerUser, loginUser, currentUser };
