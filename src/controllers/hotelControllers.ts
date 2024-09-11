@@ -3,7 +3,6 @@ import Hotel from "../models/hotelModel"
 import { NextFunction, Request, Response } from "express";
 import { hotelInterface } from "../interface/hotel.interface";
 import hotelService from "../service/hotel.service";
-import { regARoom } from "../interface/reg.interface";
 import { URequest } from "../interface/user.interface";
 import {ObjectId} from 'mongodb'
 
@@ -37,7 +36,30 @@ const getAllRooms = asyncHandler(async (req: URequest, res: Response, next:NextF
 // @ desc Get a rooms
 // @ route GET /api/v1/rooms/id
 // @ access private
+export const getRoom = async (req:URequest, res: Response, next: NextFunction) =>{
+    const {id} = req.params;
+    const userId = req.user?._id
 
+    try {
+        
+    if (!id || !userId){
+        res.status(401);
+        throw new Error ('Invalid IDs')
+    };
+
+    const room = await hotelService.getARoom({_id:id});
+
+    if(!room){
+        res.status(404);
+        throw new Error ('Room not found')
+    }
+    res.status(200).json(room)
+
+        
+    } catch (error) {
+        next(error)
+    }
+}
 
 
 // @ desc Insert a rooms
@@ -46,7 +68,7 @@ const getAllRooms = asyncHandler(async (req: URequest, res: Response, next:NextF
 
 const RegARoom = async (req: URequest, res : Response, next:NextFunction) => {
    
-    const body:regARoom = req.body;
+    const body:hotelInterface = req.body;
     const userId = new ObjectId (req.user?._id)
 
     try {
@@ -57,7 +79,7 @@ const RegARoom = async (req: URequest, res : Response, next:NextFunction) => {
         throw new Error("All field are mandatory!")
     };
     
-    const checkHotel = await hotelService.getARooms({ name:body.name });
+    const checkHotel = await hotelService.getARoom({ name:body.name });
     if( checkHotel ){
         res.status(400);
         throw new Error('Room already exist')
@@ -83,18 +105,25 @@ const RegARoom = async (req: URequest, res : Response, next:NextFunction) => {
 // @ route PATCH /api/v1/rooms/id 
 // @ access public
 
-const updateARoom = async (req: Request, res : Response, next:NextFunction) => {
+const updateARoom = async (req: URequest, res : Response, next:NextFunction) => {
     const roomId = req.params.id;
     const updateData = req.body;
+    const userId = req.user?._id;
    
     try {
 
-        const hotel = await hotelService.getARooms({_id:roomId});
+        const hotel = await hotelService.getARoom({_id:roomId});
 
         if( !hotel){
             res.status(404);
             throw new Error('Room not found')
         };
+
+        if (hotel.user_id?.toString() !== userId?.toString()){
+            res.status(403);
+            throw new Error ("You do not have permission to update this room")
+        }
+    
     
     
         const updateRoom = await hotelService.updateARoom( roomId, updateData);
@@ -121,7 +150,7 @@ const deleteARoom = async (req: URequest, res : Response, next: NextFunction) =>
     const userId = req.user?._id
 
     try {
-        const hotel = await hotelService.getARooms({_id: roomId});
+        const hotel = await hotelService.getARoom({_id: roomId});
         if( !hotel){
             res.status(404);
             throw new Error('Room not found')
@@ -133,7 +162,7 @@ const deleteARoom = async (req: URequest, res : Response, next: NextFunction) =>
         }
     
         await hotelService.deleteARoom(roomId)
-        res.status(200).json(hotel);
+        res.status(200).send('Room deleted successfully');
         
     } catch (error) {
         next(error)

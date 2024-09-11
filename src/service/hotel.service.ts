@@ -1,7 +1,6 @@
 import { FilterQuery, UpdateQuery } from 'mongoose';
 import { hotelInterface } from '../interface/hotel.interface';
 import hotel from '../models/hotelModel';
-import { regARoom } from '../interface/reg.interface';
 
 class HotelService {
 
@@ -18,7 +17,7 @@ class HotelService {
         return await hotel.findByIdAndDelete (id);
     }
 
-    async getARooms (id : FilterQuery<hotelInterface>){
+    async getARoom (id : FilterQuery<hotelInterface>){
         return await hotel.findOne(id);
     }
 

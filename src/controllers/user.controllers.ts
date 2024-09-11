@@ -78,6 +78,7 @@ const loginUser = async (req: Request, res: Response, next: NextFunction) => {
             username: user.username,
             email: user.email,
             _id: user.id,
+            role: user.role
           },
         },
         process.env.ACCESS_TOKEN!,
