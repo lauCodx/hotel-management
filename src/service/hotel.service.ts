@@ -1,6 +1,7 @@
 import { FilterQuery, UpdateQuery } from 'mongoose';
 import { hotelInterface } from '../interface/hotel.interface';
 import hotel from '../models/hotelModel';
+import { regARoom } from '../interface/reg.interface';
 
 class HotelService {
 

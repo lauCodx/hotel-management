@@ -10,7 +10,7 @@ import errorHandler from "../src/middleware/errorHandler";
 const port = process.env.PORT || 5001;
 const app = express();
 
-
+app.use(express.urlencoded({extended:false}))
 app.use(express.json());
 app.use("/api/users", require("../src/routes/user.route"));
 app.use("/api/v1/rooms", require("../src/routes/hotelRoutes"));

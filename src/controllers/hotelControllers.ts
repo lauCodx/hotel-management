@@ -1,75 +1,57 @@
 import asyncHandler from "express-async-handler";
 import Hotel from "../models/hotelModel"
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { hotelInterface } from "../interface/hotel.interface";
 import hotelService from "../service/hotel.service";
+import { regARoom } from "../interface/reg.interface";
+import { URequest } from "../interface/user.interface";
+import {ObjectId} from 'mongodb'
 
 // @ desc Get all rooms
 // @ route GET /api/v1/rooms 
 // @ access private
 
-const getAllRooms = asyncHandler(async (req: Request, res : Response) => {
-    const userId = res.locals.user.id;
-    const hotel = await hotelService.getAllRooms({user_id: userId})
-    res.status(200).json(hotel);
+const getAllRooms = asyncHandler(async (req: URequest, res: Response, next:NextFunction) => {
+   try {
+
+    const userId= req.user?._id;
+    const hotel = await hotelService.getAllRooms({user_id:userId})
+
+    if (hotel.length === 0){
+        res.status(200).send('No room found!')
+    }
+    res.status(200).json({
+        status: 'success',
+        message: 'Rooms fetched successfully',
+        noOfRooms: hotel.length,
+        data:{
+            rooms:hotel
+        }
+    });
+    
+   } catch (error) {
+        next(error)
+   }
 })
 
 // @ desc Get a rooms
 // @ route GET /api/v1/rooms/id
 // @ access private
 
-// const getARoom = asyncHandler(async (req : Request, res: Response) => {
-//     const roomId = req.params.id;
-//     const hotel = await hotelService.getARooms({_id:roomId});
-//     if( !hotel){
-//         res.status(404);
-//         throw new Error('Room not found')
-//     };
 
-//     const { search, roomType, minPrice, maxPrice} = req.query;
-//     // when maxPrice is passed and minPrice = 0
-//     if (maxPrice && !minPrice){
-//         minPrice = 0;
-//     };
-
-//     // Filter object
-//     const filter = {};
-
-//     if (search){
-//         filter.name ={ $regex: new RegExp(search), $options: 'i' };
-//     };
-
-//     if (roomType) {
-//         filter.roomType = roomType;
-//     };
-  
-//     if (minPrice || maxPrice) {
-//         filter.price = {};
-//     };
-  
-//     if (minPrice) {
-//         filter.price.$gte = minPrice; // greater than or equal to minPrice
-//     };
-  
-//     if (maxPrice) {
-//         filter.price.$lte = maxPrice; // less than or equal to maxPrice
-//     };
-
-//     const hotelFilter = await Hotel.find(filter);
-  
-    
-//     res.status(200).json(hotelFilter);
-// })
 
 // @ desc Insert a rooms
 // @ route POST /api/v1/rooms 
 // @ access public
 
-const RegARoom = asyncHandler(async (req: Request, res : Response) => {
+const RegARoom = async (req: URequest, res : Response, next:NextFunction) => {
    
-    console.log ('Created', req.body);
-    const body:hotelInterface = req.body;
+    const body:regARoom = req.body;
+    const userId = new ObjectId (req.user?._id)
 
+    try {
+
+        
     if (!body){
         res.status(400);
         throw new Error("All field are mandatory!")
@@ -80,9 +62,8 @@ const RegARoom = asyncHandler(async (req: Request, res : Response) => {
         res.status(400);
         throw new Error('Room already exist')
     };
-
    
-    const hotel = await hotelService.regRoom(body)
+    const hotel = await hotelService.regRoom({...body, user_id:userId})
     res.status(201).json(
         {
             success: true,
@@ -90,48 +71,74 @@ const RegARoom = asyncHandler(async (req: Request, res : Response) => {
             data: hotel
         }
     );
-})
+        
+    } catch (error) {
+        next(error)
+    }
+
+}
 
 
 // @ desc Update a rooms
 // @ route PATCH /api/v1/rooms/id 
 // @ access public
 
-const updateARoom = asyncHandler(async (req: Request, res : Response) => {
+const updateARoom = async (req: Request, res : Response, next:NextFunction) => {
     const roomId = req.params.id;
     const updateData = req.body;
-    const hotel = await hotelService.getARooms({_id:roomId});
-    if( !hotel){
-        res.status(404);
-        throw new Error('Room not found')
-    };
+   
+    try {
 
+        const hotel = await hotelService.getARooms({_id:roomId});
 
-    const updateRoom = await hotelService.updateARoom( roomId, updateData);
-    res.status(200).json(
-        {
-            success: true,
-            message: "Updated successfully",
-            data: updateRoom
-        }
-    );
-})
+        if( !hotel){
+            res.status(404);
+            throw new Error('Room not found')
+        };
+    
+    
+        const updateRoom = await hotelService.updateARoom( roomId, updateData);
+        res.status(200).json(
+            {
+                success: true,
+                message: "Updated successfully",
+                data: updateRoom
+            }
+        );
+        
+    } catch (error) {
+        next(error)
+    }
+  
+}
 
 // @ desc Delete all rooms
 // @ route DELETE /api/v1/rooms/id
 // @ access public
 
-const deleteARoom = asyncHandler(async (req: Request, res : Response) => {
+const deleteARoom = async (req: URequest, res : Response, next: NextFunction) => {
     const roomId = req.params.id;
-    const hotel = await hotelService.getARooms({_id: roomId});
-    if( !hotel){
-        res.status(404);
-        throw new Error('Room not found')
-    };
+    const userId = req.user?._id
 
-    await hotelService.deleteARoom(roomId)
-    res.status(200).json(hotel);
-})
+    try {
+        const hotel = await hotelService.getARooms({_id: roomId});
+        if( !hotel){
+            res.status(404);
+            throw new Error('Room not found')
+        };
+
+        if (hotel.user_id?.toString() !== userId?.toString()){
+            res.status(403);
+            throw new Error ("You do not have permission to delete this room")
+        }
+    
+        await hotelService.deleteARoom(roomId)
+        res.status(200).json(hotel);
+        
+    } catch (error) {
+        next(error)
+    }
+}
 
 
 export {

@@ -14,6 +14,7 @@
   "license": "ISC",
   "dependencies": {
     "@types/bcryptjs": "^2.4.6",
+    "@types/joi": "^17.2.3",
     "@types/jsonwebtoken": "^9.0.6",
     "@types/uuid": "^9.0.8",
     "bcryptjs": "^2.4.3",
@@ -22,7 +23,9 @@
     "express": "^4.18.3",
     "express-async-handler": "^1.2.0",
     "fs": "^0.0.1-security",
+    "joi": "^17.13.3",
     "jsonwebtoken": "^9.0.2",
+    "mongodb": "^6.8.1",
     "mongoose": "^8.2.2",
     "node-pre-gyp": "^0.17.0",
     "nodejs": "^0.0.0",

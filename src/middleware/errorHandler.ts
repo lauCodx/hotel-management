@@ -28,7 +28,11 @@ const errorHandler = (err: Error, req:Request, res: Response, next: NextFunction
             break;
     
         default:
-            console.log('No error, all good')
+            console.log({message: err.message});
+            res.status(400).json({
+                title:'Error occured',
+                message: err.message
+            })
             break;
     }
 };

@@ -4,25 +4,20 @@ import { v4 as uuid } from 'uuid';
 const hotelSchema = new mongoose.Schema({
     user_id:{
         type: mongoose.Schema.Types.ObjectId,
-        require: true,
+        required: true,
         ref: 'user'
     },
 
     name:{
         type : String,
-        require : [true, "Name required!"]
+        required : [true, "Name required!"]
     },
 
-    roomType: {
-        type : String,
-        default : uuid(),
-        require : true
-
-    },
+   
 
     price: {
         type : Number,
-        require : [true, "Enter price!"]
+        required : [true, "Enter price!"]
     }
 },
 {
@@ -30,6 +25,6 @@ const hotelSchema = new mongoose.Schema({
 }
 );
 
-const Hotel = mongoose.model('hotel', hotelSchema);
+const Hotel = mongoose.model('hotelRooms', hotelSchema);
 
 export default Hotel;
