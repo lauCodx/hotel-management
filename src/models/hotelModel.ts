@@ -13,7 +13,11 @@ const hotelSchema = new mongoose.Schema({
         required : [true, "Name required!"]
     },
 
-   
+    roomType: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: [true, 'Room type is required'],
+        ref: 'RoomTypes'
+    },
 
     price: {
         type : Number,
