@@ -1,4 +1,4 @@
-import { UpdateQuery } from 'mongoose';
+import { FilterQuery, UpdateQuery } from 'mongoose';
 import { roomTypeInterface } from '../interface/roomType.interface';
 import RoomType from '../models/roomType.model'
 
@@ -13,6 +13,10 @@ class RoomTypes {
 
     async deleteRoomType(id:string){
         return await RoomType.findByIdAndDelete(id)
+    }
+
+    async findRoom (filter: FilterQuery<roomTypeInterface>){
+        return await RoomType.findOne(filter)
     }
 }
 

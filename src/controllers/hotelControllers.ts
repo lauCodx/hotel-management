@@ -1,5 +1,3 @@
-import asyncHandler from "express-async-handler";
-import Hotel from "../models/hotelModel"
 import { NextFunction, Request, Response } from "express";
 import { hotelInterface } from "../interface/hotel.interface";
 import hotelService from "../service/hotel.service";
@@ -10,7 +8,7 @@ import {ObjectId} from 'mongodb'
 // @ route GET /api/v1/rooms 
 // @ access private
 
-const getAllRooms = asyncHandler(async (req: URequest, res: Response, next:NextFunction) => {
+const getAllRooms = async (req: URequest, res: Response, next:NextFunction) => {
    try {
 
     const userId= req.user?._id;
@@ -31,7 +29,7 @@ const getAllRooms = asyncHandler(async (req: URequest, res: Response, next:NextF
    } catch (error) {
         next(error)
    }
-})
+}
 
 // @ desc Get a rooms
 // @ route GET /api/v1/rooms/id
