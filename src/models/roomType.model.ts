@@ -4,7 +4,8 @@ import mongoose from "mongoose";
 const RoomTypeSchema = new mongoose.Schema ({
     name :{
         type: String,
-        required: true
+        required: true,
+        lowercase: true
     }
 
 })

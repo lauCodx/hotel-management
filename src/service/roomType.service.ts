@@ -15,8 +15,12 @@ class RoomTypes {
         return await RoomType.findByIdAndDelete(id)
     }
 
-    async findRoom (data: string){
-        return await RoomType.findOne({data})
+    async findRoom (data: FilterQuery<roomTypeInterface>){
+        return await RoomType.findOne(data)
+    }
+
+    async getAllRoomTypes (){
+        return await RoomType.find()
     }
 }
 

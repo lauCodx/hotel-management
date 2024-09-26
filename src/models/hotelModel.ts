@@ -10,7 +10,8 @@ const hotelSchema = new mongoose.Schema({
 
     name:{
         type : String,
-        required : [true, "Name required!"]
+        required : [true, "Name required!"],
+        lowercase: true
     },
 
     roomType: {

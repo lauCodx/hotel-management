@@ -45,7 +45,7 @@ export const getRoom = async (req:URequest, res: Response, next: NextFunction) =
         throw new Error ('Invalid IDs')
     };
 
-    const room = await hotelService.getARoom({_id:id});
+    const room = await hotelService.getARoom({_id:id})
 
     if(!room){
         res.status(404);
@@ -77,13 +77,13 @@ const RegARoom = async (req: URequest, res : Response, next:NextFunction) => {
         throw new Error("All field are mandatory!")
     };
     
-    const checkHotel = await hotelService.getARoom({ name:body.name });
+    const checkHotel = await hotelService.getARoom({ name:body.name.toLowerCase() });
     if( checkHotel ){
         res.status(400);
         throw new Error('Room already exist')
     };
    
-    const hotel = await hotelService.regRoom({...body, user_id:userId})
+    const hotel = await (await hotelService.regRoom({...body, user_id:userId})).populate('roomType')
     res.status(201).json(
         {
             success: true,

@@ -15,7 +15,7 @@ export const roomTypeCreate = async (req:Request, res: Response, next:NextFuncti
             throw new Error ('Name is required!') 
         }
 
-        const roomT = await RoomType.findRoom(name)
+        const roomT = await RoomType.findRoom({name:name.toLowerCase()})
 
         if(roomT){
             res.status(400);
@@ -24,9 +24,28 @@ export const roomTypeCreate = async (req:Request, res: Response, next:NextFuncti
 
         const roomTC = await RoomType.createRoomType(body)
 
-        res.status(201).json(roomTC)
+        res.status(201).json({
+            status: 'success',
+            message:'Room type created successfully',
+            data: roomTC
+        })
         
     } catch (error) {
         next(error)
     }
 };
+
+export const getAllRoomType = async (req:Request, res: Response, next:NextFunction)=> {
+    try {
+        const roomT = await RoomType.getAllRoomTypes();
+        
+        if(roomT.length === 0){
+            res.status(200).send('No room type found')
+        }
+
+        res.status(200).json(roomT)
+    } catch (error) {
+        next(error)
+    }
+}
+
