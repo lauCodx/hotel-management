@@ -22,7 +22,7 @@ class HotelService {
     }
 
     async getAllRooms (filter : FilterQuery <hotelInterface>){
-        return await hotel.find(filter)
+        return await hotel.find(filter).populate('roomType')
     }
 }
 
